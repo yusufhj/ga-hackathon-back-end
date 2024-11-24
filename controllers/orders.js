@@ -3,11 +3,15 @@ const router = express.Router();
 const verifyToken = require('../middleware/verify-token');
 const Product = require('../models/product');
 const Order = require('../models/order');
+const region = require('../models/region');
 
 // GET /orders
 router.get('/', async (req, res) => {
     try {
-        const orders = await Order.find();
+        const orders = await Order.find()
+            .populate('customer')
+            .limit(20);
+        console.log(orders);
         res.json(orders);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -17,7 +21,10 @@ router.get('/', async (req, res) => {
 // GET /orders/:oid
 router.get('/:oid', async (req, res) => {
     try {
-        const order = await Order.findOne({ oid: req.params.oid });
+        const order = await Order.findById( req.params.oid )
+            .populate('customer')
+            .populate('order_items.product')
+            .populate('order_items.region');
         if (order == null) {
             return res.status(404).json({ message: 'Order not found' });
         }
