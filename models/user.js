@@ -11,7 +11,13 @@ const userSchema = mongoose.Schema(
             type: String,
             required: true,
         },
-    }, 
+        customer_name: {
+            type: String,
+        },
+        segment: {
+            type: String,
+        },
+    },
     {   timestamps: true, }
 );
 
